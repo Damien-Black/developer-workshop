@@ -692,6 +692,215 @@ into the applet’s resources directory, or we can add it to the dxapp.json:</p>
 
 <h2 id="simplifying-file-io-commands">7.2 Simplifying File IO Commands</h2>
 
+<h3 id="bash">Bash</h3>
+
+<p>So far, we have been handling transfers to and from the platform with an individual command
+for each file. We can make this easier by using a couple of commands that handle IO for
+all input and output files at once. The first command is <code class="highlighter-rouge">dx-download-all-inputs</code>, and it
+can replace the individual <code class="highlighter-rouge">dx download</code> commands we have been using:</p>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#old2" data-toggle="tab">old</a></li>
+    <li><a href="#new2" data-toggle="tab">new</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="old2">
+
+<pre class="highlight"><code>    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> -o mate1.fastq.gz
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastqgz</span><span class="s2">"</span> -o mate2.fastq.gz
+</code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="new2">
+
+<pre class="highlight"><code>   dx-download-all-inputs
+</code></pre>
+  
+  </div>
+</div>
+
+<p>Now, we no longer have hard-coded file names for the inputs that we have downloaded, but we still
+need to refer to them later in the script. We can do this using special variables that are
+available in the bash script. For example, supposed the name of the file we were supplying for the
+<code class="highlighter-rouge">mate1_fastqgz</code> file was <code class="highlighter-rouge">SRR3469431_1.fastq.gz</code>. Then, the three variables we can use in the bash
+script would have the following values:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$mate1_fastqgz_path</span><span class="s2">"</span>   <span class="c"># /home/dnanexus/in/mate1_fastqgz/SRR3469431_1.fastq.gz </span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$mate1_fastqgz_name</span><span class="s2">"</span>   <span class="c"># SRR3469431_1.fastq.gz </span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$mate1_fastqgz_prefix</span><span class="s2">"</span> <span class="c"># SRR3469431_1</span>
+</code></pre>
+</div>
+
+<p>So, we can just refer to the downloaded file using these variables. If the input were an
+array of files rather than a single file, the correponding bash variables would be arrays
+rather than strings.</p>
+
+<p><code class="highlighter-rouge">dx-upload-all-outputs</code> handles both the uploading of files and the association of the
+uploaded files with the appropriate fields in the dxapp.json’s outputSpec. To use
+<code class="highlighter-rouge">dx-upload-all-outputs</code>, move output files to directories <code class="highlighter-rouge">/home/dnanexus/&lt;output_field&gt;/</code>.
+So for the <code class="highlighter-rouge">aligned_bam</code> output, we should put our BAM file in <code class="highlighter-rouge">/home/dnanexuss/aligned_bam/</code>
+before calling <code class="highlighter-rouge">dx-upload-all-outputs</code>.</p>
+
+<p>Putting these together, we get an updated script:</p>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#old3" data-toggle="tab">old</a></li>
+    <li><a href="#new3" data-toggle="tab">new</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="old3">
+
+<pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> -x -o pipefail
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    mark-section <span class="s2">"downloading input files"</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> -o mate1.fastq.gz
+    gunzip mate1.fastq.gz
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastqgz</span><span class="s2">"</span> -o mate2.fastq.gz
+    gunzip mate2.fastq.gz
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    mark-section <span class="s2">"extracting reference tarball"</span>
+    tar xf hisat2_index.tar.gz
+
+    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>
+    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
+
+    <span class="c"># Run hisat2</span>
+    mark-section <span class="s2">"running hisat2 command"</span>
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+    mark-section <span class="s2">"converting SAM to BAM"</span>
+    samtools view -b hisat2_output.sam &gt; hisat2_output.bam
+
+    <span class="c"># Upload the resulting file and associate it with the aligned_bam output</span>
+    mark-section <span class="s2">"uploading BAM results"</span>
+    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.bam --brief<span class="k">)</span>
+    dx-jobutil-add-output aligned_bam <span class="s2">"</span><span class="nv">$uploaded_id</span><span class="s2">"</span>
+    mark-success
+<span class="o">}</span>
+</code></pre>
+
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="new3">
+
+<pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> -x -o pipefail
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    dx-download-all-inputs --parallel
+    gunzip <span class="s2">"</span><span class="nv">$mate1_fastqgz_path</span><span class="s2">"</span>
+    <span class="nv">mate1_fastq_path</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">mate1_fastqgz_path</span><span class="p">%.gz</span><span class="k">}</span><span class="s2">"</span>
+    <span class="nv">mate1_fastq_name</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">mate1_fastqgz_name</span><span class="p">%.gz</span><span class="k">}</span><span class="s2">"</span>
+    gunzip <span class="s2">"</span><span class="nv">$mate2_fastqgz_path</span><span class="s2">"</span>
+    <span class="nv">mate2_fastq_path</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">mate2_fastqgz_path</span><span class="p">%.gz</span><span class="k">}</span><span class="s2">"</span>
+    <span class="nv">mate2_fastq_name</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">mate2_fastqgz_name</span><span class="p">%.gz</span><span class="k">}</span><span class="s2">"</span>
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    mark-section <span class="s2">"extracting reference tarball"</span>
+    tar xf <span class="s2">"</span><span class="nv">$hisat2_index_targz_path</span><span class="s2">"</span>
+
+    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">hisat2_index_targz_name</span><span class="p">%.tar.gz</span><span class="k">}</span>
+    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
+
+    <span class="c"># Run hisat2</span>
+    mark-section <span class="s2">"running hisat2 command"</span>
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 <span class="s2">"</span><span class="nv">$mate1_fastq_path</span><span class="s2">"</span> -2 <span class="s2">"</span><span class="nv">$mate2_fastq_path</span><span class="s2">"</span> -S hisat2_output.sam
+
+    mark-section <span class="s2">"converting SAM to BAM"</span>
+    mkdir -p ./out/aligned_bam
+    samtools view -b hisat2_output.sam &gt; ./out/aligned_bam/<span class="s2">"</span><span class="nv">$mate1_fastqgz_prefix</span><span class="s2">"</span>.hisat2.bam
+
+    dx-upload-all-outputs
+
+    mark-success
+<span class="o">}</span>
+</code></pre>
+  
+  </div>
+</div>
+
+<h3 id="python">Python</h3>
+
+<p>There is no equivalent for <code class="highlighter-rouge">dx-upload-all-outputs</code> in python, but there is a function
+<code class="highlighter-rouge">dxpy.dx_download_all_inputs()</code>. This will return a dictionary with keys that are the
+same as the variables used in bash.</p>
+
+<h2 id="piping">7.3 Piping</h2>
+
+<p>So far, we have been completely downloading each compressed file and then decompressing it.
+We can speed things up by decompressing as we download, so that the file is streamed to a
+<code class="highlighter-rouge">gunzip</code> process as it is downloaded. We do this by using pipes and <code class="highlighter-rouge">dx cat</code>:</p>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#old4" data-toggle="tab">old</a></li>
+    <li><a href="#new4" data-toggle="tab">new</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="old4">
+
+<pre class="highlight"><code>    dx download <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> -o mate1.fastq.gz
+    gunzip mate1.fastq.gz
+</code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="new4">
+
+<pre class="highlight"><code>   dx cat <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> | gunzip &gt; mate1_fastqgz
+</code></pre>
+  
+  </div>
+</div>
+
+<p>We also would like to keep using the file variables, which takes a little special handling:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>    <span class="nv">mate1_fastq_path</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">mate1_fastqgz_path</span><span class="p">%.gz</span><span class="k">}</span><span class="s2">"</span>
+    mkdir -p <span class="s2">"</span><span class="k">$(</span>dirname <span class="s2">"</span><span class="nv">$mate1_fastq_path</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span>
+    dx cat <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> | gunzip &gt; <span class="s2">"</span><span class="nv">$mate1_fastq_path</span><span class="s2">"</span>
+</code></pre>
+</div>
+
+<p>In python this can be more complicated. One option is to just use <code class="highlighter-rouge">subprocess</code> with <code class="highlighter-rouge">shell=True</code>, and
+simply run commands the way you would in bash. Alternatively, you can use <code class="highlighter-rouge">subprocess.PIPE</code>:</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code>    <span class="c"># Prepare the hisat2 command and run it.</span>
+    <span class="n">hisat2_cmd_template</span> <span class="o">=</span> <span class="p">(</span><span class="s">"hisat2 --dta -x {index_basename} -1 {mate1_fastq} "</span>
+                           <span class="s">"-2 {mate2_fastq}"</span><span class="p">)</span>
+    <span class="n">hisat2_cmd</span> <span class="o">=</span> <span class="n">hisat2_cmd_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">index_basename</span><span class="o">=</span><span class="n">index_basename</span><span class="p">,</span>
+        <span class="n">mate1_fastq</span><span class="o">=</span><span class="n">inputs_dict</span><span class="p">[</span><span class="s">"mate1_fastqgz_path"</span><span class="p">][</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".gz"</span><span class="p">)],</span>
+        <span class="n">mate2_fastq</span><span class="o">=</span><span class="n">inputs_dict</span><span class="p">[</span><span class="s">"mate2_fastqgz_path"</span><span class="p">][</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".gz"</span><span class="p">)])</span>
+    <span class="n">hisat2_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">hisat2_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+
+    <span class="n">samtools_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
+        <span class="p">[</span><span class="s">"samtools"</span><span class="p">,</span> <span class="s">"view"</span><span class="p">,</span> <span class="s">"-b"</span><span class="p">,</span> <span class="s">"-"</span><span class="p">,</span>
+         <span class="s">"-o"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">inputs_dict</span><span class="p">[</span><span class="s">"mate1_fastqgz_prefix"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s">".bam"</span><span class="p">],</span>
+        <span class="n">stdin</span><span class="o">=</span><span class="n">hisat2_proc</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+    <span class="n">hisat2_proc</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">samtools_proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+    <span class="n">hisat2_proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">hisat2_proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">samtools_proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"hisat2 | samtools pipeline failed"</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>In this code, the <code class="highlighter-rouge">subprocess.Popen</code> call for the hisat2 command sends its output
+to the <code class="highlighter-rouge">samtools_proc</code> process. This can be tricky to get right, so it is helpful to
+start from a working template.</p>
 
 
     <div class="tags">
