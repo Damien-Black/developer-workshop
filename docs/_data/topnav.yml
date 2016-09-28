@@ -1,0 +1,15 @@
+## Topnav single links
+## if you want to list an external url, use external_url instead of url. the theme will apply a different link base.
+topnav:
+- title: Topnav
+
+#Topnav dropdowns
+topnav_dropdowns:
+- title: Topnav dropdowns
+  folders:
+    - title: DNAnexus Resources
+      folderitems:
+        - title: DNAnexus Platform
+          external_url: https://platform.dnanexus.com
+        - title: DNAnexus Wiki
+          external_url: https://wiki.dnanexus.com

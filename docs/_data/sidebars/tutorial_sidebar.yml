@@ -1,0 +1,40 @@
+entries:
+  - title: sidebar
+    product: Developer Workshop
+    folders:
+    - title: Workshop Topics
+      output: web
+      folderitems:
+      - title: 0. Welcome
+        output: web
+        url: /index.html
+      - title: 1. Getting Started
+        output: web
+        url: /workshop_getting_started.html
+      - title: 2. Organizing the Pipeline
+        output: web
+        url: /workshop_organizing_the_pipeline.html
+      - title: 3. Do You Need an Applet?
+        output: web
+        url: /workshop_do_you_need_an_applet.html
+      - title: 4. Basic Applet Structure
+        output: web
+        url: /workshop_basic_applet_structure.html
+      - title: 5. Debugging and Error Handling
+        output: web
+        url: /workshop_debugging_and_error_handling.html
+      - title: 6. Improving Execution
+        output: web
+        url: /workshop_improving_execution.html
+      - title: 7. Improving File IO
+        output: web
+        url: /workshop_improving_file_io.html
+      - title: 8. Parallelization
+        output: web
+        url: /workshop_parallelization.html
+      - title: 9. Distributed Applets
+        output: web
+        url: /workshop_distributed_applets.html
+      - title: 10. Handling Complex Dependencies
+        output: web
+        url: /workshop_handling_complex_dependencies.html
