@@ -58,6 +58,26 @@
 
 
 {
+"title": "Basic Applet Structure",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_basic_applet_structure.html",
+"summary": ""
+},
+
+
+
+{
+"title": "Debugging and Error Handling",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_debugging_and_error_handling.html",
+"summary": ""
+},
+
+
+
+{
 "title": "Do You Need an Applet?",
 "tags": "",
 "keywords": "getting_started",
@@ -72,6 +92,26 @@
 "tags": "",
 "keywords": "getting_started",
 "url": "workshop_getting_started.html",
+"summary": ""
+},
+
+
+
+{
+"title": "Improving Execution",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_improving_execution.html",
+"summary": ""
+},
+
+
+
+{
+"title": "Improving File IO",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_improving_file_io.html",
 "summary": ""
 },
 

@@ -40,4 +40,12 @@ for section 1.1. You can use these intermediate files to save yourself some typi
 to catch up or skip ahead, and to compare code between different iterations of
 the applet.
 
+## 1.2 N.B - Apps vs. Applets
+
+A quick note for more experienced DNAnexus users. DNAnexus has several types of
+executables: applets, apps, and workflows. We are going to build a workflow of
+applets, and we will not discuss apps very much. Apps are, in some sense, a
+wrapper around an underlying applet. And we are going to focus on the code
+within the applet.
+
 {% include links.html %}

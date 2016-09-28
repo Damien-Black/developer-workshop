@@ -25,7 +25,7 @@ The Swiss Army Knife app takes an arbitrary list of files and a command string a
 inputs. It downloads all the files, runs the command, and uploads any new files.
 So, we could just add our BED file as an input and type in the appropriate command:
 
-{% include image.html file="swiss_army_knife_example.png" caption="" alt="Swiss Army Knif App" %}
+{% include image.html file="swiss_army_knife_example.png" caption="" alt="Swiss Army Knife App" %}
 
 When using Swiss Army Knife, it’s often useful to refer to input files using wildcards, like
 `*.bed`, so the command can be independent of the specific input files. It also

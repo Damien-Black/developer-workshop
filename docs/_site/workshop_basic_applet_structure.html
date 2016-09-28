@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content=" getting_started">
+<title>Basic Applet Structure | DNAnexus Developer Workshop</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="http://www.dnanexus.comfeed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    
+
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> DNAnexus Connect Developer Workshop</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">DNAnexus Resources<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        
+                        
+                        <li><a href="https://platform.dnanexus.com" target="_blank">DNAnexus Platform</a></li>
+                        
+                        
+                        
+                        <li><a href="https://wiki.dnanexus.com" target="_blank">DNAnexus Wiki</a></li>
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Basic Applet Structure">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Sidebar Column -->
+        <div class="col-md-3">
+
+          
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">Developer Workshop </li>
+    
+    
+    
+    <li>
+        <a href="#">Workshop Topics</a>
+        <ul>
+            
+            
+            
+            <li><a href="index.html">0. Welcome</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_getting_started.html">1. Getting Started</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_organizing_the_pipeline.html">2. Organizing the Pipeline</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_do_you_need_an_applet.html">3. Do You Need an Applet?</a></li>
+            
+            
+            
+            
+            
+            
+            <li class="active"><a href="workshop_basic_applet_structure.html">4. Basic Applet Structure</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_debugging_and_error_handling.html">5. Debugging and Error Handling</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_execution.html">6. Improving Execution</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_file_io.html">7. Improving File IO</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_parallelization.html">8. Parallelization</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_distributed_applets.html">9. Distributed Applets</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_handling_complex_dependencies.html">10. Handling Complex Dependencies</a></li>
+            
+            
+            
+            
+        </ul>
+        
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+    </li>
+</ul>
+</div>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+    <!-- Content Column -->
+    <div class="col-md-9">
+        <div class="post-header">
+   <h1 class="post-title-main">Basic Applet Structure</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+/* this offset helps account for the space taken up by the floating toolbar. */
+$('#toc').on('click', 'a', function() {
+  var target = $(this.getAttribute('href'))
+    , scroll_target = target.offset().top
+
+  $(window).scrollTop(scroll_target - 10);
+  return false
+})
+  
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+    
+
+    
+
+    
+
+  <h2 id="running-hisat2">4.0 Running HISAT2</h2>
+
+<p>Our first app is responsible for running HISAT2. The HISAT2 executables are available
+in the <code class="highlighter-rouge">resources</code> directory of the GitHub repo and the workshop-in-a-box. We can take
+a look at its inputs and options by looking at its help message:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>./hisat2 -h
+HISAT2 version 2.0.4 by Daehwan Kim <span class="o">(</span>infphilo@gmail.com, www.ccb.jhu.edu/people/infphilo<span class="o">)</span>
+Usage:
+  hisat2 <span class="o">[</span>options]<span class="k">*</span> -x &lt;ht2-idx&gt; <span class="o">{</span>-1 &lt;m1&gt; -2 &lt;m2&gt; | -U &lt;r&gt; | --sra-acc &lt;SRA accession number&gt;<span class="o">}</span> <span class="o">[</span>-S &lt;sam&gt;]
+
+  &lt;ht2-idx&gt;  Index filename prefix <span class="o">(</span>minus trailing .X.ht2<span class="o">)</span>.
+  &lt;m1&gt;       Files with <span class="c">#1 mates, paired with files in &lt;m2&gt;.</span>
+             Could be gzip<span class="s1">'ed (extension: .gz) or bzip2'</span>ed <span class="o">(</span>extension: .bz2<span class="o">)</span>.
+  &lt;m2&gt;       Files with <span class="c">#2 mates, paired with files in &lt;m1&gt;.</span>
+             Could be gzip<span class="s1">'ed (extension: .gz) or bzip2'</span>ed <span class="o">(</span>extension: .bz2<span class="o">)</span>.
+  &lt;r&gt;        Files with unpaired reads.
+             Could be gzip<span class="s1">'ed (extension: .gz) or bzip2'</span>ed <span class="o">(</span>extension: .bz2<span class="o">)</span>.
+  &lt;SRA accession number&gt;        Comma-separated list of SRA accession numbers, e.g. --sra-acc SRR353653,SRR353654.
+  &lt;sam&gt;      File <span class="k">for </span>SAM output <span class="o">(</span>default: stdout<span class="o">)</span>
+
+  &lt;m1&gt;, &lt;m2&gt;, &lt;r&gt; can be comma-separated lists <span class="o">(</span>no whitespace<span class="o">)</span> and can be
+  specified many times.  E.g. <span class="s1">'-U file1.fq,file2.fq -U file3.fq'</span>.
+
+...and so on.
+</code></pre>
+</div>
+
+<p>So, the basic HISAT2 command is this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>hisat2 -x &lt;hisat2-idx&gt; -1 &lt;m1&gt; -2 &lt;m2&gt;  -S &lt;hit&gt;
+</code></pre>
+</div>
+
+<p>where <code class="highlighter-rouge">&lt;hisat2-idx&gt;</code> refers to the “basename” of the HISAT2 reference index, <code class="highlighter-rouge">&lt;m1&gt;</code> and <code class="highlighter-rouge">&lt;m2&gt;</code>
+refer to fastq files with the first and second mates of the RNA-seq reads, and <code class="highlighter-rouge">&lt;hit&gt;</code>
+refers to the output SAM file.</p>
+
+<p>If we review the instructions for running the entire HISAT2, StringTie, Ballgown pipeline, we
+see that we are also supposed to use the <code class="highlighter-rouge">--dta</code> parameter, so we end up with this</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>hisat2 --dta -x &lt;hisat2-idx&gt; -1 &lt;m1&gt; -2 &lt;m2&gt; -S &lt;hit&gt;
+</code></pre>
+</div>
+
+<p>This basic command then informs how we will create our initial, very simple HISAT2 applet.</p>
+
+<h2 id="components-of-an-applet">4.1 Components of an Applet</h2>
+
+<p>There are three main parts of an applet on DNAnexus:</p>
+
+<ul>
+  <li><strong><a href="https://wiki.dnanexus.com/dxapp.json">dxapp.json file</a></strong></li>
+</ul>
+
+<p>The dxapp.json file defines the interface of the applet, and it tells the platform
+some details about how the applet should be run.</p>
+
+<ul>
+  <li><strong>Applet script</strong></li>
+</ul>
+
+<p>Each applet has a script, written in bash or python2.7, that the platform runs
+within the worker when the applet it run. Often, this script just calls other scripts
+and compiled code.</p>
+
+<ul>
+  <li><strong>Applet resources</strong></li>
+</ul>
+
+<p>Optionally, each applet can have resource files packaged with it. These will be
+placed on the worker before the applet script is run. There are a few ways to package
+applet resources, but for now we will just work with the <code class="highlighter-rouge">./resources</code> directory
+of the applet.</p>
+
+<h3 id="dxappjson">dxapp.json</h3>
+
+<p>Based on the command above, our <code class="highlighter-rouge">dxapp.json</code> file is straighforward. The applet will
+have one input for the HISAT2 reference tarball and an input for each FASTQ file.
+Its output will be a SAM file produced by histat2. The rest of the <code class="highlighter-rouge">dxapp.json</code>
+file is mostly some names and descriptions of the applet:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Runs a simple HISAT2 command."</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"inputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2_index_targz"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2 Index Tarball"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tar.gz'd HISAT2 index for a reference genome, produced using hisat2-build."</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate1_fastq"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 1 FASTQ"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FASTQ file containing mate 1 reads."</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate2_fastq"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 2 FASTQ"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FASTQ file containing mate 2 reads."</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aligned_sam"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Aligned SAM"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SAM file with alignments reported by HISAT2"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>The remainder of the <code class="highlighter-rouge">dxapp.json</code> depends on whether you want to write
+your applet script in python or bash:</p>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#python" data-toggle="tab">python</a></li>
+    <li><a href="#bash" data-toggle="tab">bash</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="python">
+
+<pre class="highlight"><code><span class="w">  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/script.py"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"interpreter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"python2.7"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="err">}</span><span class="w">
+</span></code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="bash">
+
+ <pre class="highlight"><code><span class="w">  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/script.sh"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"interpreter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="err">}</span><span class="w">
+</span></code></pre> 
+  
+  </div>
+</div>
+
+<h3 id="applet-script">Applet Script</h3>
+
+<p>We already know the command that we need to run for HISAT2, but in order to run that
+command on DNAnexus, we have to take care of a few other things. First, we need to
+download the input files to the local storage of the worker running the applet. Then,
+we run the hisat2 command. Then, we upload the output SAM file and indicate that it
+is the output associated with the <code class="highlighter-rouge">aligned_sam</code> entry in the applet’s outputSpec.</p>
+
+<p>We will start with the command we want to run, and then add in the DNAnexus-specific
+parts:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Now, we will add some commands to download the input files from the platform to the
+local storage of the worker:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+main<span class="o">()</span> <span class="o">{</span>
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastq</span><span class="s2">"</span> -o mate1.fastq
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastq</span><span class="s2">"</span> -o mate2.fastq
+
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Next, we need to extract the HISAT2 reference tarball:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+main<span class="o">()</span> <span class="o">{</span>
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastq</span><span class="s2">"</span> -o mate1.fastq
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastq</span><span class="s2">"</span> -o mate2.fastq
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    tar xf hisat2_index.tar.gz
+
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Then, we will upload the output file, and associate with the correct field
+from the outputSpec of the <code class="highlighter-rouge">dxapp.json</code>.</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+main<span class="o">()</span> <span class="o">{</span>
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastq</span><span class="s2">"</span> -o mate1.fastq
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastq</span><span class="s2">"</span> -o mate2.fastq
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    tar xf hisat2_index.tar.gz
+
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+    <span class="c"># Upload the resulting file and associate it with the aligned_sam output</span>
+    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.sam --brief<span class="k">)</span>
+    dx-jobutil-add-output aligned_sam <span class="nv">$uploaded_id</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Finally, we need to figure out what string to give to the <code class="highlighter-rouge">hisat2</code> executable for
+“index basename”. The HISAT2 website has reference tarballs ready for download, so
+we can look at one to see what is inside:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>tar tf grch38.tar.gz 
+grch38/
+grch38/genome.5.ht2
+grch38/genome.2.ht2
+grch38/make_grch38.sh
+grch38/genome.3.ht2
+grch38/genome.4.ht2
+grch38/genome.7.ht2
+grch38/genome.1.ht2
+grch38/genome.6.ht2
+grch38/genome.8.ht2
+</code></pre>
+</div>
+
+<p>In this case, the index basename should be “grch38/genome”, so we add some string manipulation
+logic to our applet to set that variable correctly.</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastq</span><span class="s2">"</span> -o mate1.fastq
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastq</span><span class="s2">"</span> -o mate2.fastq
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    tar xf hisat2_index.tar.gz
+
+    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>/genome
+
+    <span class="c"># Run hisat2</span>
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+    <span class="c"># Upload the resulting file and associate it with the aligned_sam output</span>
+    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.sam --brief<span class="k">)</span>
+    dx-jobutil-add-output aligned_sam <span class="nv">$uploaded_id</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>And that is it. This full script is at <code class="highlighter-rouge">applets/hisat2/bash/41_script.sh</code></p>
+
+<p>The python version is similar, but obviously with python versions of each command
+used:</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+
+<span class="kn">import</span> <span class="nn">dxpy</span>
+
+<span class="nd">@dxpy.entry_point</span><span class="p">(</span><span class="s">"main"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="n">mate1_fastq</span><span class="p">,</span> <span class="n">mate2_fastq</span><span class="p">):</span>
+
+    <span class="c"># First, download all the input files to local storage</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">)</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate1_fastq</span><span class="p">,</span> <span class="s">"mate1.fastq"</span><span class="p">)</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate2_fastq</span><span class="p">,</span> <span class="s">"mate2.fastq"</span><span class="p">)</span>
+
+
+    <span class="c"># Second, extract the index tarball</span>
+    <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
+    <span class="n">proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+    <span class="c"># Third, figure out what the basename of the hisat2 reference index is</span>
+    <span class="c"># This depends on the basename following the pattern used in the indexes</span>
+    <span class="c"># distributed by the authors of HISAT2, that is the index in grch37.tar.gz</span>
+    <span class="c"># will extract to grch37/genome*</span>
+    <span class="n">index_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dxpy</span><span class="o">.</span><span class="n">DXFile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".tar.gz"</span><span class="p">)],</span>
+                                  <span class="s">"genome"</span><span class="p">)</span>
+
+    <span class="c"># Prepare the hisat2 command and run it.</span>
+    <span class="n">hisat2_cmd_template</span> <span class="o">=</span> <span class="p">(</span><span class="s">"hisat2 --dta -x {index_basename} -1 {mate1_fastq} "</span>
+                           <span class="s">"-2 {mate2_fastq} -S {hisat2_output_sam}"</span><span class="p">)</span>
+    <span class="n">hisat2_cmd</span> <span class="o">=</span> <span class="n">hisat2_cmd_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">index_basename</span><span class="o">=</span><span class="n">index_basename</span><span class="p">,</span>
+        <span class="n">mate1_fastq</span><span class="o">=</span><span class="s">"mate1.fastq"</span><span class="p">,</span>
+        <span class="n">mate2_fastq</span><span class="o">=</span><span class="s">"mate2.fastq"</span><span class="p">,</span>
+        <span class="n">hisat2_output_sam</span><span class="o">=</span><span class="s">"hisat2_output.sam"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">hisat2_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c"># Upload the output SAM file.</span>
+    <span class="n">uploaded_dxfile</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">upload_local_file</span><span class="p">(</span><span class="s">"hisat2_output.sam"</span><span class="p">)</span>
+
+    <span class="c"># Return the ID of the uploaded SAM file associated with the "aligned_sam"</span>
+    <span class="c"># field in the outputSpec in dxapp.json.</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">"aligned_sam"</span><span class="p">:</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">dxlink</span><span class="p">(</span><span class="n">uploaded_dxfile</span><span class="o">.</span><span class="n">get_id</span><span class="p">())}</span>
+</code></pre>
+</div>
+
+<h2 id="building-the-applet">4.2 Building the Applet</h2>
+
+<p>Now we can actually build this applet to the DNAnexus platform. This requires creating
+a directory structure for the applet and running <code class="highlighter-rouge">dx build</code>. The directory should look
+like this:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>hisat2/dxapp.json
+hisat2/src/script.py
+hisat2/resources/usr/bin/hisat2
+hisat2/resources/usr/bin/hisat2-build-s
+hisat2/resources/usr/bin/hisat2-build-l-debug
+...and more hisat2 executables
+</code></pre>
+</div>
+
+<p>We can create this with the following commands:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
+<span class="gp">$ </span>mkdir hisat2/src
+<span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh src/script.sh
+<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>dx build hisat2
+</code></pre>
+</div>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
+<span class="gp">$ </span>mkdir hisat2/src
+<span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/python/41_script.py src/script.py
+<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>dx build hisat2
+</code></pre>
+</div>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#python2" data-toggle="tab">python</a></li>
+    <li><a href="#bash2" data-toggle="tab">bash</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="python2">
+
+<pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
+<span class="gp">$ </span>mkdir hisat2/src
+<span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/python/41_script.py src/script.py
+<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>dx build hisat2
+</code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="bash2">
+
+<pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
+<span class="gp">$ </span>mkdir hisat2/src
+<span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh src/script.sh
+<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>dx build hisat2
+</code></pre>
+  
+  </div>
+</div>
+
+<p>And we can run it through the command line or the web UI.</p>
+
+
+    <div class="tags">
+        
+    </div>
+
+    
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2016 DNAnexus. All rights reserved. <br />
+ Site last generated: Sep 28, 2016 <br />
+<p><img src="images/company_logo.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+    </div>
+
+</body>
+
+</html>

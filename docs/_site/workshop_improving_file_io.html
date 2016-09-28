@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content=" getting_started">
+<title>Improving File IO | DNAnexus Developer Workshop</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="http://www.dnanexus.comfeed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    
+
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> DNAnexus Connect Developer Workshop</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">DNAnexus Resources<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        
+                        
+                        <li><a href="https://platform.dnanexus.com" target="_blank">DNAnexus Platform</a></li>
+                        
+                        
+                        
+                        <li><a href="https://wiki.dnanexus.com" target="_blank">DNAnexus Wiki</a></li>
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Improving File IO">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Sidebar Column -->
+        <div class="col-md-3">
+
+          
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">Developer Workshop </li>
+    
+    
+    
+    <li>
+        <a href="#">Workshop Topics</a>
+        <ul>
+            
+            
+            
+            <li><a href="index.html">0. Welcome</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_getting_started.html">1. Getting Started</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_organizing_the_pipeline.html">2. Organizing the Pipeline</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_do_you_need_an_applet.html">3. Do You Need an Applet?</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_basic_applet_structure.html">4. Basic Applet Structure</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_debugging_and_error_handling.html">5. Debugging and Error Handling</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_execution.html">6. Improving Execution</a></li>
+            
+            
+            
+            
+            
+            
+            <li class="active"><a href="workshop_improving_file_io.html">7. Improving File IO</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_parallelization.html">8. Parallelization</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_distributed_applets.html">9. Distributed Applets</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_handling_complex_dependencies.html">10. Handling Complex Dependencies</a></li>
+            
+            
+            
+            
+        </ul>
+        
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+    </li>
+</ul>
+</div>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+    <!-- Content Column -->
+    <div class="col-md-9">
+        <div class="post-header">
+   <h1 class="post-title-main">Improving File IO</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+/* this offset helps account for the space taken up by the floating toolbar. */
+$('#toc').on('click', 'a', function() {
+  var target = $(this.getAttribute('href'))
+    , scroll_target = target.offset().top
+
+  $(window).scrollTop(scroll_target - 10);
+  return false
+})
+  
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+    
+
+    
+
+    
+
+  <p>If unmanaged, file IO can be a significant source of overhead when running
+jobs on DNAnexus. But, there are a number of ways to ensure the file transfers
+are efficient and easy for users.</p>
+
+<h2 id="file-patterns">7.0 File Patterns</h2>
+
+<p>When you are selecting files as inputs through the web UI, you can limit the files that are
+suggested to files that match a certain pattern. For example, for the FASTQ file inputs, you
+can limit suggested files to those that end in “.fastq” or “.fq”. For the reference tarball,
+you can limit files to those ending with “.tar.gz”. This is done with the “patterns” key in
+the dxapp.json file:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Runs a simple HISAT2 command."</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"inputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2_index_targz"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2 Index Tarball"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tar.gz'd HISAT2 index for a reference genome, produced using hisat2-build."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.tar.gz"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate1_fastq"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 1 FASTQ"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FASTQ file containing mate 1 reads."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.fastq"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.fq"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate2_fastq"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 2 FASTQ"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FASTQ file containing mate 2 reads."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.fastq"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.fq"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aligned_sam"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Aligned SAM"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SAM file with alignments reported by HISAT2"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.sam"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"runSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/script.sh"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"interpreter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"systemRequirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"instanceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mem1_ssd1_x8"</span><span class="p">}},</span><span class="w">
+    </span><span class="nt">"distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ubuntu"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"release"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.04"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timeoutPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">}}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="compressing-inputs-and-outputs">7.1 Compressing Inputs and Outputs</h2>
+
+<p>Generally it is faster to transfer a compressed file and decompress it than it is
+to transfer an uncompressed file. In the current iteration of the HISAT2 applet,
+our inputs are FASTQ files, and our output is a SAM. We can speed up the applet
+by changing those to gzipped FASTQ files and a BAM file.</p>
+
+<p>To do this, we need to change the dxapp.json file so that the patterns and names
+now indicate that the user should expect compressed files:</p>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#old" data-toggle="tab">old</a></li>
+    <li><a href="#new" data-toggle="tab">new</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="old">
+
+<pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Runs a simple HISAT2 command."</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"inputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2_index_targz"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2 Index Tarball"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tar.gz'd HISAT2 index for a reference genome, produced using hisat2-build."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.tar.gz"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate1_fastq"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 1 FASTQ"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FASTQ file containing mate 1 reads."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.fastq"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.fq"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate2_fastq"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 2 FASTQ"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FASTQ file containing mate 2 reads."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.fastq"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.fq"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aligned_sam"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Aligned SAM"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SAM file with alignments reported by HISAT2"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.sam"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"runSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/script.sh"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"interpreter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"systemRequirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"instanceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mem1_ssd1_x8"</span><span class="p">}},</span><span class="w">
+    </span><span class="nt">"distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ubuntu"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"release"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.04"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timeoutPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">}}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="new">
+
+<pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Runs a simple HISAT2 command."</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"inputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2_index_targz"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HISAT2 Index Tarball"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tar.gz'd HISAT2 index for a reference genome, produced using hisat2-build."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.tar.gz"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate1_fastqgz"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 1 FASTQ (gzipped)"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gzipped FASTQ file containing mate 1 reads."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.fastq.gz"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.fq.gz"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mate2_fastqgz"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mate 2 FASTQ (gzipped)"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gzipped FASTQ file containing mate 2 reads."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.fastq.gz"</span><span class="p">,</span><span class="w"> </span><span class="s2">"*.fq.gz"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outputSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"aligned_bam"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Aligned BAM"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"class"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"help"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BAM file with alignments reported by HISAT2"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"patterns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"*.bam"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"runSpec"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/script.sh"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"interpreter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"systemRequirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"instanceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mem1_ssd1_x8"</span><span class="p">}},</span><span class="w">
+    </span><span class="nt">"distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ubuntu"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"release"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.04"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timeoutPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">}}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+  
+  </div>
+</div>
+
+<p>And we need to update our applet scripts so that they decompress the input files and compress the output:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> -x -o pipefail
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    mark-section <span class="s2">"downloading input files"</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> -o mate1.fastq.gz
+    gunzip mate1.fastq.gz
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastqgz</span><span class="s2">"</span> -o mate2.fastq.gz
+    gunzip mate2.fastq.gz
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    mark-section <span class="s2">"extracting reference tarball"</span>
+    tar xf hisat2_index.tar.gz
+
+    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>
+    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
+
+    <span class="c"># Run hisat2</span>
+    mark-section <span class="s2">"running hisat2 command"</span>
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+    mark-section <span class="s2">"converting SAM to BAM"</span>
+    samtools view -b hisat2_output.sam &gt; hisat2_output.bam
+
+    <span class="c"># Upload the resulting file and associate it with the aligned_bam output</span>
+    mark-section <span class="s2">"uploading BAM results"</span>
+    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.bam --brief<span class="k">)</span>
+    dx-jobutil-add-output aligned_bam <span class="s2">"</span><span class="nv">$uploaded_id</span><span class="s2">"</span>
+    mark-success
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">dxpy</span>
+
+<span class="nd">@dxpy.entry_point</span><span class="p">(</span><span class="s">"main"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="n">mate1_fastqgz</span><span class="p">,</span> <span class="n">mate2_fastqgz</span><span class="p">):</span>
+
+    <span class="c"># First, download all the input files to local storage</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">)</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate1_fastqgz</span><span class="p">,</span> <span class="s">"mate1.fastq.gz"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"gunzip"</span><span class="p">,</span> <span class="s">"mate1.fastq.gz"</span><span class="p">])</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate2_fastqgz</span><span class="p">,</span> <span class="s">"mate2.fastq.gz"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"gunzip"</span><span class="p">,</span> <span class="s">"mate2.fastq.gz"</span><span class="p">])</span>
+
+
+    <span class="c"># Second, extract the index tarball</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"Error extracting reference tarball"</span><span class="p">)</span>
+
+    <span class="n">index_directory</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">DXFile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".tar.gz"</span><span class="p">)]</span>
+    <span class="n">index_basename</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">index_directory</span><span class="p">,</span> <span class="s">"*.1.ht2"</span><span class="p">))[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".1.ht2"</span><span class="p">)]</span>
+
+
+    <span class="c"># Prepare the hisat2 command and run it.</span>
+    <span class="n">hisat2_cmd_template</span> <span class="o">=</span> <span class="p">(</span><span class="s">"hisat2 --dta -x {index_basename} -1 {mate1_fastq} "</span>
+                           <span class="s">"-2 {mate2_fastq} -S {hisat2_output_sam}"</span><span class="p">)</span>
+    <span class="n">hisat2_cmd</span> <span class="o">=</span> <span class="n">hisat2_cmd_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">index_basename</span><span class="o">=</span><span class="n">index_basename</span><span class="p">,</span>
+        <span class="n">mate1_fastq</span><span class="o">=</span><span class="s">"mate1.fastq"</span><span class="p">,</span>
+        <span class="n">mate2_fastq</span><span class="o">=</span><span class="s">"mate2.fastq"</span><span class="p">,</span>
+        <span class="n">hisat2_output_sam</span><span class="o">=</span><span class="s">"hisat2_output.sam"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">hisat2_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"samtools"</span><span class="p">,</span> <span class="s">"view"</span><span class="p">,</span> <span class="s">"-b"</span><span class="p">,</span> <span class="s">"hisat2_output.sam"</span><span class="p">,</span> <span class="s">"-o"</span><span class="p">,</span> <span class="s">"hisat2_output.bam"</span><span class="p">])</span>
+
+    <span class="c"># Upload the output SAM file.</span>
+    <span class="n">uploaded_dxfile</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">upload_local_file</span><span class="p">(</span><span class="s">"hisat2_output.bam"</span><span class="p">)</span>
+
+    <span class="c"># Return the ID of the uploaded SAM file associated with the "aligned_sam"</span>
+    <span class="c"># field in the outputSpec in dxapp.json.</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">"aligned_bam"</span><span class="p">:</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">dxlink</span><span class="p">(</span><span class="n">uploaded_dxfile</span><span class="o">.</span><span class="n">get_id</span><span class="p">())}</span>
+</code></pre>
+</div>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#python" data-toggle="tab">python</a></li>
+    <li><a href="#bash" data-toggle="tab">bash</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="python">
+<pre class="highlight"><code><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+
+<span class="kn">import</span> <span class="nn">dxpy</span>
+
+<span class="nd">@dxpy.entry_point</span><span class="p">(</span><span class="s">"main"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="n">mate1_fastqgz</span><span class="p">,</span> <span class="n">mate2_fastqgz</span><span class="p">):</span>
+
+    <span class="c"># First, download all the input files to local storage</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">)</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate1_fastqgz</span><span class="p">,</span> <span class="s">"mate1.fastq.gz"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"gunzip"</span><span class="p">,</span> <span class="s">"mate1.fastq.gz"</span><span class="p">])</span>
+    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate2_fastqgz</span><span class="p">,</span> <span class="s">"mate2.fastq.gz"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"gunzip"</span><span class="p">,</span> <span class="s">"mate2.fastq.gz"</span><span class="p">])</span>
+
+
+    <span class="c"># Second, extract the index tarball</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"Error extracting reference tarball"</span><span class="p">)</span>
+
+    <span class="n">index_directory</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">DXFile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".tar.gz"</span><span class="p">)]</span>
+    <span class="n">index_basename</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">index_directory</span><span class="p">,</span> <span class="s">"*.1.ht2"</span><span class="p">))[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".1.ht2"</span><span class="p">)]</span>
+
+
+    <span class="c"># Prepare the hisat2 command and run it.</span>
+    <span class="n">hisat2_cmd_template</span> <span class="o">=</span> <span class="p">(</span><span class="s">"hisat2 --dta -x {index_basename} -1 {mate1_fastq} "</span>
+                           <span class="s">"-2 {mate2_fastq} -S {hisat2_output_sam}"</span><span class="p">)</span>
+    <span class="n">hisat2_cmd</span> <span class="o">=</span> <span class="n">hisat2_cmd_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">index_basename</span><span class="o">=</span><span class="n">index_basename</span><span class="p">,</span>
+        <span class="n">mate1_fastq</span><span class="o">=</span><span class="s">"mate1.fastq"</span><span class="p">,</span>
+        <span class="n">mate2_fastq</span><span class="o">=</span><span class="s">"mate2.fastq"</span><span class="p">,</span>
+        <span class="n">hisat2_output_sam</span><span class="o">=</span><span class="s">"hisat2_output.sam"</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">hisat2_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"samtools"</span><span class="p">,</span> <span class="s">"view"</span><span class="p">,</span> <span class="s">"-b"</span><span class="p">,</span> <span class="s">"hisat2_output.sam"</span><span class="p">,</span> <span class="s">"-o"</span><span class="p">,</span> <span class="s">"hisat2_output.bam"</span><span class="p">])</span>
+
+    <span class="c"># Upload the output SAM file.</span>
+    <span class="n">uploaded_dxfile</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">upload_local_file</span><span class="p">(</span><span class="s">"hisat2_output.bam"</span><span class="p">)</span>
+
+    <span class="c"># Return the ID of the uploaded SAM file associated with the "aligned_sam"</span>
+    <span class="c"># field in the outputSpec in dxapp.json.</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">"aligned_bam"</span><span class="p">:</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">dxlink</span><span class="p">(</span><span class="n">uploaded_dxfile</span><span class="o">.</span><span class="n">get_id</span><span class="p">())}</span>
+</code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="bash">
+
+<pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> -x -o pipefail
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    mark-section <span class="s2">"downloading input files"</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> -o mate1.fastq.gz
+    gunzip mate1.fastq.gz
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastqgz</span><span class="s2">"</span> -o mate2.fastq.gz
+    gunzip mate2.fastq.gz
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    mark-section <span class="s2">"extracting reference tarball"</span>
+    tar xf hisat2_index.tar.gz
+
+    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>
+    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
+
+    <span class="c"># Run hisat2</span>
+    mark-section <span class="s2">"running hisat2 command"</span>
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+    mark-section <span class="s2">"converting SAM to BAM"</span>
+    samtools view -b hisat2_output.sam &gt; hisat2_output.bam
+
+    <span class="c"># Upload the resulting file and associate it with the aligned_bam output</span>
+    mark-section <span class="s2">"uploading BAM results"</span>
+    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.bam --brief<span class="k">)</span>
+    dx-jobutil-add-output aligned_bam <span class="s2">"</span><span class="nv">$uploaded_id</span><span class="s2">"</span>
+    mark-success
+<span class="o">}</span>
+</code></pre>
+  
+  </div>
+</div>
+
+<p>Note that we are now using <code class="highlighter-rouge">samtools</code> in out applet scripts, so we need to make sure
+that is available to the worker. We can do that by either copying a samtools executable
+into the applet’s resources directory, or we can add it to the dxapp.json:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">  </span><span class="err">...</span><span class="w">
+  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+    </span><span class="nt">"execDepends"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"samtools"</span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>This will make the worker run</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>apt-get install samtools
+</code></pre>
+</div>
+<p>before the job starts.</p>
+
+<h2 id="simplifying-file-io-commands">7.2 Simplifying File IO Commands</h2>
+
+
+
+    <div class="tags">
+        
+    </div>
+
+    
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2016 DNAnexus. All rights reserved. <br />
+ Site last generated: Sep 28, 2016 <br />
+<p><img src="images/company_logo.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+    </div>
+
+</body>
+
+</html>

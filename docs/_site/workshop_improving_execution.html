@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="keywords" content=" getting_started">
-<title>Do You Need an Applet? | DNAnexus Developer Workshop</title>
+<title>Improving Execution | DNAnexus Developer Workshop</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -130,7 +130,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Do You Need an Applet?">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Improving Execution">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -187,7 +187,7 @@
             
             
             
-            <li class="active"><a href="workshop_do_you_need_an_applet.html">3. Do You Need an Applet?</a></li>
+            <li><a href="workshop_do_you_need_an_applet.html">3. Do You Need an Applet?</a></li>
             
             
             
@@ -208,7 +208,7 @@
             
             
             
-            <li><a href="workshop_improving_execution.html">6. Improving Execution</a></li>
+            <li class="active"><a href="workshop_improving_execution.html">6. Improving Execution</a></li>
             
             
             
@@ -260,7 +260,7 @@
     <!-- Content Column -->
     <div class="col-md-9">
         <div class="post-header">
-   <h1 class="post-title-main">Do You Need an Applet?</h1>
+   <h1 class="post-title-main">Improving Execution</h1>
 </div>
 
 
@@ -300,87 +300,100 @@ $('#toc').on('click', 'a', function() {
 
     
 
-  <h2 id="alternatives-to-applets">3.0 Alternatives to Applets</h2>
+  <p>There are a number of ways to configure applets to run beyond the defaults used by the
+platform.</p>
 
-<p>Before we start implementing our HISAT2 applet, we should recall that you can
-run tools on DNAnexus without creating an applet at all. This is helpful when
-you are performing a one-off task or just want to do some exploration. These
-approaches give up some reproducibility and auditability, but they are quick
-and easy to use.</p>
+<h2 id="instance-type">6.0 Instance Type</h2>
 
-<h2 id="swiss-army-knife">3.1 Swiss Army Knife</h2>
+<p>If you do not specify an instance type for your applet, it will default to an instance
+called “mem2_hdd2_x2”. The user can override this, but it is better to specify a better
+default value so the user does not have to worry about it.</p>
 
-<p>In some cases, you want to run a command or two on some files and get the
-output. For example, you might want to merge overlapping entries in a BED file
-using a <code class="highlighter-rouge">bedtools</code> command. You could create an applet that has a BED file input
-and a merged BED file output, or you could just type the command and run it using
-the Swiss Army Knife app.</p>
+<p>This is done in the dxapp.json file:</p>
 
-<p>The Swiss Army Knife app takes an arbitrary list of files and a command string as
-inputs. It downloads all the files, runs the command, and uploads any new files.
-So, we could just add our BED file as an input and type in the appropriate command:</p>
-
-<figure><img class="docimage" src="images/swiss_army_knife_example.png" alt="Swiss Army Knife App" /><figcaption></figcaption></figure>
-
-<p>When using Swiss Army Knife, it’s often useful to refer to input files using wildcards, like
-<code class="highlighter-rouge">*.bed</code>, so the command can be independent of the specific input files. It also
-allows you to refer to multiple files at once.</p>
-
-<p>The Swiss Army Knife app has a number of tools built-in, so you can refer to them
-in commands. The list of tools and more information are available on the
-<a href="https://platform.dnanexus.com/app/swiss-army-knife">apps page</a>.</p>
-
-<h2 id="cloud-workstation">3.2 Cloud Workstation</h2>
-
-<p>In other cases, you want to work interactively on a remote computer that has fast
-access to files stored on the DNAnexus platform as well as the rest of the internet.
-You also may want to work on a computer with specific resources, like 32 cores or
-200 GiB of memory. This can be accomplished with the Cloud Workstation app. The
-Cloud Workstation app simply runs a DNAnexus worker for a specified period of time
-that you can SSH into.</p>
-
-<p>The Cloud Workstation app is described in the
-<a href="https://wiki.dnanexus.com/Developer-Tutorials/Cloud-Workstations">DNAnexus Wiki</a>.</p>
-
-<p>You can run the Cloud Workstation app from the terminal. First you need to set up
-SSH access with <code class="highlighter-rouge">dx ssh_config</code>.</p>
-
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dx ssh_config
-Select an SSH key pair to use when connecting to DNAnexus jobs. The public key will be saved to your
-DNAnexus account <span class="o">(</span>readable only by you<span class="o">)</span>. The private key will remain on this computer.                          
-dx is already configured to use the SSH key pair at:
-    /home/vagrant/.dnanexus_config/ssh_id
-    /home/vagrant/.dnanexus_config/ssh_id.pub
-0<span class="o">)</span> Use this SSH key pair
-1<span class="o">)</span> Select or create another SSH key pair...                                                                                         
-Pick a numbered choice: 0
-Updated public key <span class="k">for </span>user user-mkinsella_ugm
-Your account has been configured <span class="k">for </span>use with SSH. Use dx run with the --allow-ssh, --ssh,
-or --debug-on options to launch <span class="nb">jobs </span>and connect to them.
-</code></pre>
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">  </span><span class="err">...</span><span class="w">
+  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+    </span><span class="nt">"systemRequirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"instanceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mem1_ssd1_x8"</span><span class="p">}},</span><span class="w">
+  </span><span class="err">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span></code></pre>
 </div>
 
-<p>Then run the app:</p>
+<p>The list of DNAnexus instance types and the resources available for each one is available on
+the DNAnexus <a href="https://wiki.dnanexus.com/API-Specification-v1.0.0/Instance-Types">wiki</a>.</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dx run app-cloud_workstation --allow-ssh                                                
-Select an optional parameter to <span class="nb">set</span>&lt; by its <span class="c"># (^D or &lt;ENTER&gt; to finish):        </span>
- <span class="o">[</span>0] Maximum Session Length <span class="o">(</span>suffixes allowed: s, m, h, d, w, M, y<span class="o">)</span> <span class="o">(</span>max_session_length<span class="o">)</span> <span class="o">[</span><span class="nv">default</span><span class="o">=</span><span class="s2">"1h"</span><span class="o">]</span>                             
- <span class="o">[</span>1] Files <span class="o">(</span>fids<span class="o">)</span>                                         
-              
-Optional param <span class="c">#:</span>
-Using input JSON:
-<span class="o">{}</span>                                                                                                                                  
-Confirm running the executable with this input <span class="o">[</span>Y/n]: y                                                                             
-Calling app-Bpx83Y00zV01pZ0zGGpyk0y0 with output destination project-BzYQ2Y005vP8j0j081y1pjqQ:/                                     
-Job ID: job-BzYVf3j05vP5bQxz15q4g0pg                                                                                                
-Watch launched job now? <span class="o">[</span>Y/n] n
-</code></pre>
+<h3 id="selecting-an-instance-type">Selecting an instance type</h3>
+
+<p>Choosing the best default value for instance type is a bit of an art. There are a few
+things to keep in mind:</p>
+
+<ul>
+  <li><strong>Memory requirements</strong>. You need to make sure that the worker has enough
+memory to accomodate the applet’s highest memory usage.</li>
+  <li><strong>Local storage requirements</strong>. You have to make sure that there is enough
+disk space on the worker to fit input and output files for the applet.</li>
+  <li><strong>Parallelization of multiple cores</strong>. Generally, you would like to have your
+jobs finish faster, and you can often do that by increasing the number of
+CPUs that your applet uses. However, the improvement is not always linear.
+A program may only run, say, 20% faster if we double the number of CPUs.</li>
+  <li><strong>Cost</strong>. The cost of an instance increases with CPUs, memory, and storage.
+We want to avoid paying for resources that we are not going to use.</li>
+</ul>
+
+<h2 id="selecting-an-os-release">6.1 Selecting an OS Release</h2>
+
+<p>The default operating system use by DNAnexus workers is Ubuntu 12.04. However, Ubuntu 12.04
+will reach end-of-life in April 2017, which is rather soon. This means that it will stop
+receiving security updates and more generally will be increasingly out of date.</p>
+
+<p>Ubuntu 12.04 will remain the default, but you can specify Ubuntu 14.04 in the dxapp.json file:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">  </span><span class="err">...</span><span class="w">
+  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+    </span><span class="nt">"distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ubuntu"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"release"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.04"</span><span class="p">,</span><span class="w">
+  </span><span class="err">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span></code></pre>
 </div>
 
-<p>And ssh into the job running the app</p>
+<p>One caveat to using Ubuntu 14.04 is that not all instance typs on DNAnexus currently support it.
+Specifically, any instance type with “hdd2” in its name will not work with Ubuntu 14.04.</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dx ssh job-BzYVf3j05vP5bQxz15q4g0pg
-</code></pre>
+<p>But, unless you need one of those instance types, it is almost always better to switch to Ubuntu 14.04.</p>
+
+<h2 id="setting-a-timeout-policy">6.2 Setting a Timeout Policy</h2>
+
+<p>Sometimes an applet can enter a state where productive work has stopped, but there has been
+no error and the script is not complete. For example, an executable can just hang rather than
+fail. In that case, the applet will just keep running for 30 days or until you notice it and
+terminate it. That can lead to an unexpectedly high cost for a failed job.</p>
+
+<p>You can protect yourself against this by using a “timeoutPolicy” in the applet’s dxapp.json:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">  </span><span class="err">...</span><span class="w">
+  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+    </span><span class="nt">"timeoutPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">}}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Choose an timeout value that is longer than you reasonably expect the applet to run on a large input.</p>
+
+<h2 id="versioning">6.3 Versioning</h2>
+
+<p>Finally, you can indicate a version of your applet in the dxapp.json file. This has more of an impact
+when you switch from applets to apps, but it is still a nice thing to keep track of in an applet:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hisat2"</span><span class="p">,</span><span class="w">
+   </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.1"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span></code></pre>
 </div>
 
 

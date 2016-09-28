@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content=" getting_started">
+<title>Debugging and Error Handling | DNAnexus Developer Workshop</title>
+<link rel="stylesheet" href="css/syntax.css">
+
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="css/modern-business.css">
+<link rel="stylesheet" href="css/lavish-bootstrap.css">
+<link rel="stylesheet" href="css/customstyles.css">
+<link rel="stylesheet" href="css/theme-blue.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="js/jquery.navgoco.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="js/toc.js"></script>
+<script src="js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="images/favicon.ico">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<link rel="alternate" type="application/rss+xml" title="" href="http://www.dnanexus.comfeed.xml">
+
+    <script>
+        $(document).ready(function() {
+            // Initialize navgoco with default options
+            $("#mysidebar").navgoco({
+                caretHtml: '',
+                accordion: true,
+                openClass: 'active', // open
+                save: false, // leave false or nav highlighting doesn't work right
+                cookie: {
+                    name: 'navgoco',
+                    expires: false,
+                    path: '/'
+                },
+                slide: {
+                    duration: 400,
+                    easing: 'swing'
+                }
+            });
+
+            $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    
+
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container topnavlinks">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="fa fa-lg navbar-brand" href="index.html">&nbsp;<span class="projectTitle"> DNAnexus Connect Developer Workshop</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <!-- entries without drop-downs appear here -->
+                
+                
+                
+                <!-- entries with drop-downs appear here -->
+                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
+                
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">DNAnexus Resources<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        
+                        
+                        <li><a href="https://platform.dnanexus.com" target="_blank">DNAnexus Platform</a></li>
+                        
+                        
+                        
+                        <li><a href="https://wiki.dnanexus.com" target="_blank">DNAnexus Wiki</a></li>
+                        
+                        
+                    </ul>
+                </li>
+                
+                
+                
+                <!--comment out this block if you want to hide search-->
+                <li>
+                    <!--start search-->
+                    <div id="search-demo-container">
+                        <input type="text" id="search-input" placeholder="search...">
+                        <ul id="results-container"></ul>
+                    </div>
+                    <script src="js/jekyll-search.js" type="text/javascript"></script>
+                    <script type="text/javascript">
+                            SimpleJekyllSearch.init({
+                                searchInput: document.getElementById('search-input'),
+                                resultsContainer: document.getElementById('results-container'),
+                                dataSource: 'search.json',
+                                searchResultTemplate: '<li><a href="{url}" title="Debugging and Error Handling">{title}</a></li>',
+                    noResultsText: 'No results found.',
+                            limit: 10,
+                            fuzzy: true,
+                    })
+                    </script>
+                    <!--end search-->
+                </li>
+            </ul>
+        </div>
+        </div>
+        <!-- /.container -->
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="col-lg-12">&nbsp;</div>
+    <!-- Content Row -->
+    <div class="row">
+        <!-- Sidebar Column -->
+        <div class="col-md-3">
+
+          
+
+
+<ul id="mysidebar" class="nav">
+    <li class="sidebarTitle">Developer Workshop </li>
+    
+    
+    
+    <li>
+        <a href="#">Workshop Topics</a>
+        <ul>
+            
+            
+            
+            <li><a href="index.html">0. Welcome</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_getting_started.html">1. Getting Started</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_organizing_the_pipeline.html">2. Organizing the Pipeline</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_do_you_need_an_applet.html">3. Do You Need an Applet?</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_basic_applet_structure.html">4. Basic Applet Structure</a></li>
+            
+            
+            
+            
+            
+            
+            <li class="active"><a href="workshop_debugging_and_error_handling.html">5. Debugging and Error Handling</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_execution.html">6. Improving Execution</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_file_io.html">7. Improving File IO</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_parallelization.html">8. Parallelization</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_distributed_applets.html">9. Distributed Applets</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_handling_complex_dependencies.html">10. Handling Complex Dependencies</a></li>
+            
+            
+            
+            
+        </ul>
+        
+        
+        
+        <!-- if you aren't using the accordion, uncomment this block:
+           <p class="external">
+               <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+           </p>
+           -->
+    </li>
+</ul>
+</div>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+    <!-- Content Column -->
+    <div class="col-md-9">
+        <div class="post-header">
+   <h1 class="post-title-main">Debugging and Error Handling</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+/* this offset helps account for the space taken up by the floating toolbar. */
+$('#toc').on('click', 'a', function() {
+  var target = $(this.getAttribute('href'))
+    , scroll_target = target.offset().top
+
+  $(window).scrollTop(scroll_target - 10);
+  return false
+})
+  
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+    
+
+    
+
+    
+
+  <h2 id="debug-hold">5.0 Debug Hold</h2>
+
+<p>The HISAT2 jobs that we just started should all complete successfully. However
+if we use a different reference, <code class="highlighter-rouge">grch38_snp_tran.tar.gz</code>, we get an error:</p>
+
+<figure><img class="docimage" src="images/failed_job_summary.png" alt="Failed Job Summary" /><figcaption></figcaption></figure>
+
+<p>The error invites us to look at the log:</p>
+
+<figure><img class="docimage" src="images/failed_job_log.png" alt="Failed Job Log" /><figcaption></figcaption></figure>
+
+<p>None of that is terribly helpful, but we have not yet used any DNAnexus debugging or error
+handling features. The first and most useful feature is “debug hold”. This is a setting
+used when running a job that tells the platform to keep the worker running for 3 days
+if it encounters an error. This lets us SSH into the worker that was running the failed
+job and figure out what happened.</p>
+
+<p>We can run a job in debug hold by selecting it when running the job through the UI or
+by adding this flag to the <code class="highlighter-rouge">dx run</code> call:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>--debug-on All
+</code></pre>
+</div>
+
+<p>Then, when the job enters the “debug hold” state, we can SSH into it:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>dx ssh_config
+</code></pre>
+</div>
+
+<p>and figure out what went wrong. In this case, we can look at the reference directory
+that gets extracted and see that one of our assumptions was not correct:</p>
+
+<figure><img class="docimage" src="images/debugon_error.png" alt="Debug Hold Error" /><figcaption></figcaption></figure>
+
+<p>Then, we can fix our script to handle this case</p>
+
+<h3 id="bash">Bash</h3>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#old" data-toggle="tab">old</a></li>
+    <li><a href="#fixed" data-toggle="tab">fixed</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="old">
+
+<pre class="highlight"><code>    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>/genome
+</code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="fixed">
+
+<pre class="highlight"><code>    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>
+    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
+</code></pre>
+  
+  </div>
+</div>
+
+<h3 id="python">Python</h3>
+
+<ul id="profileTabs" class="nav nav-tabs">
+    <li class="active"><a href="#old2" data-toggle="tab">old</a></li>
+    <li><a href="#fixed2" data-toggle="tab">fixed</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="old2">
+
+<pre class="highlight"><code>    <span class="n">index_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dxpy</span><span class="o">.</span><span class="n">DXFile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".tar.gz"</span><span class="p">)],</span>
+                                  <span class="s">"genome"</span><span class="p">)</span>
+</code></pre>
+
+  </div>
+  <div role="tabpanel" class="tab-pane" id="fixed2">
+
+<pre class="highlight"><code>    <span class="n">index_directory</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">DXFile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".tar.gz"</span><span class="p">)]</span>
+    <span class="n">index_basename</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">index_directory</span><span class="p">,</span> <span class="s">"*.1.ht2"</span><span class="p">))[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".1.ht2"</span><span class="p">)]</span>
+</code></pre>
+  
+  </div>
+</div>
+
+<h2 id="reporting-errors-in-bash">5.1 Reporting Errors in Bash</h2>
+
+<p>The DNAnexus platform provides ways to gives users more helpful information when a job fails.</p>
+
+<h3 id="mark-section-and-mark-success">mark-section and mark-success</h3>
+<p>The first strategy is a pair of brief scripts called <code class="highlighter-rouge">mark-section</code> and <code class="highlighter-rouge">mark-success</code>.
+These scripts record an error message that tells the user what the applet what doing
+when it was failed. This replaces the “Please consult the job log” message. We can add
+these to our bash script:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> -x -o pipefail
+
+main<span class="o">()</span> <span class="o">{</span>
+
+    <span class="c"># Download the inputs to the worker's local storage</span>
+    mark-section <span class="s2">"downloading input files"</span>
+    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
+    dx download <span class="s2">"</span><span class="nv">$mate1_fastq</span><span class="s2">"</span> -o mate1.fastq
+    dx download <span class="s2">"</span><span class="nv">$mate2_fastq</span><span class="s2">"</span> -o mate2.fastq
+
+    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
+    mark-section <span class="s2">"extracting reference tarball"</span>
+    tar xf hisat2_index.tar.gz
+
+    <span class="c"># Get the index basename to use when calling hisat2</span>
+    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
+    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>
+    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
+    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
+
+    <span class="c"># Run hisat2</span>
+    mark-section <span class="s2">"running hisat2 command"</span>
+    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
+
+    <span class="c"># Upload the resulting file and associate it with the aligned_sam output</span>
+    mark-section <span class="s2">"uploading SAM results"</span>
+    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.sam --brief<span class="k">)</span>
+    dx-jobutil-add-output aligned_sam <span class="nv">$uploaded_id</span>
+    mark-success
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>And of course, we need to add the <code class="highlighter-rouge">mark-section</code> and <code class="highlighter-rouge">mark-success</code> executables to the applet’s
+resources directory.</p>
+
+<p>Now if the tar command fails, the user will see a message “Error while extracting reference tarball.”</p>
+
+<h3 id="set--x--o-pipefail"><code class="highlighter-rouge">set -x -o pipefail</code></h3>
+
+<p>We can also make bash logs more useful and make a bash script less likely to ignore an error. To do this, we add one line to the top of our bash script:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nb">set</span> -x -o pipefail
+</code></pre>
+</div>
+<p>The <code class="highlighter-rouge">-x</code> will have each line printed into the log as it is executed. This makes it easier to figure out exactly where in the applet script and error occurred.</p>
+
+<p>The <code class="highlighter-rouge">-o pipefail</code> ensures that an error in the middle of a pipeline will not be ignored. In bash, you can pipe commands together, but when <code class="highlighter-rouge">pipefail</code> is not set, failures of commands in the pipeline will be ignored. For example if you had</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code>cmd1 | cmd2 | cmd3
+</code></pre>
+</div>
+<p>and <code class="highlighter-rouge">cmd2</code> failed but <code class="highlighter-rouge">cmd3</code> succeeded, the script would continue without reporting an error. That is not usually what you want in a DNAnexus applet.</p>
+
+<h2 id="reporting-errors-in-python">5.2 Reporting Errors in Python</h2>
+
+<p>Error reporting in python needs less special attention, but it can be customized by raising 
+<code class="highlighter-rouge">dxpy.AppError</code> exceptions. This will change the error message that is presented to the user.
+So, we could accomplish something similar to <code class="highlighter-rouge">mark-section</code> by wrapping parts of the script
+in a <code class="highlighter-rouge">try</code>-<code class="highlighter-rouge">except</code> block:</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
+        <span class="n">proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"Error extracting reference tarball"</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>This gives a nicer message to the user. But, one issue to keep in mind is that in Python,
+this can end up obscuring important debugging information in the log. So it is a good
+idea to print the traceback if you catch a general exception:</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
+        <span class="n">proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"Error extracting reference tarball"</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h3 id="a-common-pitfall">A common pitfall</h3>
+
+<p>In the code snippet above, there a few things that could go wrong with the tar command.
+Maybe it runs out of disk space, or maybe there is a typo in the command. In those
+cases, you would want the script to halt and report that the extraction failed. Unfortunately,
+this code will not do that. It will just soldiering on, and you will likely see a misleading
+error later in the script.</p>
+
+<p>This happens because <code class="highlighter-rouge">subprocess.Popen.wait</code> does not raise an exception if the command
+it runs has a nonzero exit code. If you want the script to fail if the command fails,
+you either have to check the exit code directly, or you can use <code class="highlighter-rouge">subprocess.check_call</code>
+or <code class="highlighter-rouge">subprocess.check_output</code> to run the command.</p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code>    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
+    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"Error extracting reference tarball"</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h2 id="static-analysis-tools">5.3 Static Analysis Tools</h2>
+
+<p>Many bugs in applets can be discovered quickly without needing to wait to see it during an
+actual job on the platform. Depending on the language you are using for your applet script,
+you can use <a href="https://github.com/koalaman/shellcheck">shellcheck</a> or
+<a href="https://www.pylint.org/">pylint</a> to find bugs in an automated way.</p>
+
+<h3 id="shellcheck">Shellcheck</h3>
+
+<p>Shellcheck is an extremely useful tool when writing bash scripts on DNAnexus. There
+are a lot of corner cases in bash and mistakes that are easy to make. Shellcheck finds
+them and even has a nice <a href="https://github.com/koalaman/shellcheck/wiki">wiki</a> that describes
+the reasoning behind each issue it identifies.</p>
+
+<p>Shellcheck can be apt-get intsalled in Ubuntu 14.04, and it available on the workshop-in-a-box.</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>shellcheck ~/applets/hisat2/bash/41_script.sh
+</code></pre>
+</div>
+
+<h3 id="pylint">Pylint</h3>
+
+<p>Pylint is similar to shellcheck, except it is for python. It also tends to identify issues
+that are more stylistic rather than something that would lead to a bug.</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pylint ~/applets/hisat2/python/41_script.py
+</code></pre>
+</div>
+<p>### dxapp_lint.py</p>
+
+<p>Finally, you may want to ensure that the dxapp.json files you create follow a certain style
+or meet certain requirements. There is a script at <code class="highlighter-rouge">resources/dxapp_lint.py</code> that checks a
+dxapp.json file against a long list of rules. The script there is currently rather pedantic,
+but you can examine the code and make adjustments relatively easily.</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>python ~/resources/dxapp_lint.py ~/applets/hisat2/bash/41_dxapp.json
+</code></pre>
+</div>
+
+
+    <div class="tags">
+        
+    </div>
+
+    
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2016 DNAnexus. All rights reserved. <br />
+ Site last generated: Sep 28, 2016 <br />
+<p><img src="images/company_logo.png" alt="Company logo"/></p>
+                </div>
+            </div>
+</footer>
+
+
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+    </div>
+
+</body>
+
+</html>
