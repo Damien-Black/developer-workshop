@@ -1,0 +1,24 @@
+{
+  "name": "ballgown",
+  "title": "Ballgown",
+  "summary": "Runs a couple Ballgown commands",
+  "inputSpec": [
+    {
+      "name": "ctab_targzs",
+      "label": "Ctab Tar.gz files",
+      "class": "array:file",
+      "help": "Tar.gzs of ctab files produced by StringTie.",
+      "patterns": ["*.tar.gz"]
+    }
+  ],
+  "outputSpec": [],
+  "runSpec": {
+    "file": "src/script.sh",
+    "interpreter": "bash",
+    "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}},
+    "distribution": "Ubuntu",
+    "release": "14.04",
+    "timeoutPolicy": {"*": {"hours": 6, "minutes": 30}},
+    "assetDepends": [{"id": "record-BzbY2z80YZX3Xx1Q1kKZ808V"}]
+  }
+}

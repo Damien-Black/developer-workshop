@@ -1,0 +1,37 @@
+{
+  "name": "hisat2",
+  "title": "HISAT2",
+  "summary": "Runs a simple HISAT2 command.",
+  "inputSpec": [
+    {
+      "name": "hisat2_index_targz",
+      "label": "HISAT2 Index Tarball",
+      "class": "file",
+      "help": "Tar.gz'd HISAT2 index for a reference genome, produced using hisat2-build."
+    },
+    {
+      "name": "mate1_fastq",
+      "label": "Mate 1 FASTQ",
+      "class": "file",
+      "help": "FASTQ file containing mate 1 reads."
+    },
+    {
+      "name": "mate2_fastq",
+      "label": "Mate 2 FASTQ",
+      "class": "file",
+      "help": "FASTQ file containing mate 2 reads."
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "aligned_sam",
+      "label": "Aligned SAM",
+      "class": "file",
+      "help": "SAM file with alignments reported by HISAT2"
+    }
+  ],
+  "runSpec": {
+    "file": "src/script.sh",
+    "interpreter": "bash"
+  }
+}

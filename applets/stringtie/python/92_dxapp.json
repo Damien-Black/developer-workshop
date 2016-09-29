@@ -1,0 +1,53 @@
+{
+  "name": "stringtie",
+  "title": "StringTie",
+  "summary": "Runs the StringTie portions of the HISAT2/StringTie/Ballgown pipeline",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "bams",
+      "label": "BAMs",
+      "class": "array:file",
+      "help": "BAMs aligned by HISAT2.",
+      "patterns": ["*.bam"]
+    },
+    {
+      "name": "reference_gtfgz",
+      "label": "Reference GTF (gzipped)",
+      "class": "file",
+      "help": "Reference transcript annotation GTF file.",
+      "patterns": ["*.gtf.gz"]
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "assembled_transcripts_gtfs",
+      "label": "Assembled Transcripts GTFs",
+      "class": "array:file",
+      "patterns": ["*.gtf"],
+      "help": "Assembled transcript GTF files."
+    },
+    {
+      "name": "merged_assembled_transcripts_gtf",
+      "label": "Merged Assembled Transcripts GTF",
+      "class": "file",
+      "patterns": ["*.gtf"],
+      "help": "Merged assembled transcript GTF file produced by stringtie --merge."
+    },
+    {
+      "name": "ballgown_ctabs_targzs",
+      "label": "Ballgown Ctabs Tarballs",
+      "class": "array:file",
+      "patterns": ["*.tar.gz"],
+      "help": "Tarred ctab files for Ballgown."
+    }
+  ],
+  "runSpec": {
+    "file": "src/script.py",
+    "interpreter": "python2.7",
+    "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x8"}},
+    "distribution": "Ubuntu",
+    "release": "14.04",
+    "timeoutPolicy": {"*": {"hours": 6, "minutes": 30}}
+  }
+}
