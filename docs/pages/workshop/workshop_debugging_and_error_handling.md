@@ -235,6 +235,7 @@ that are more stylistic rather than something that would lead to a bug.
 ```shell
 $ pylint ~/applets/hisat2/python/41_script.py
 ```
+
 ### dxapp_lint.py
 
 Finally, you may want to ensure that the dxapp.json files you create follow a certain style

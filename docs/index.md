@@ -43,7 +43,7 @@ from [https://wiki.dnanexus.com/Downloads#DNAnexus-Platform-SDK](https://wiki.dn
 Follow the instructions there to set up the SDK and verify that it is
 working.
 2. Clone the GitHub repo that contains the source files for the applets
-that we will be working on.
+that we will be working on: [https://github.com/dnanexus/developer-workshop](https://github.com/dnanexus/developer-workshop)
 
 If you think you may have issues with installing and running the SDK, there
 is an alternative. This may be the case if you know you have are using a
@@ -54,17 +54,25 @@ you are restricted from using new software.
 web UI.
 2. Click on the "workshop-in-a-box" applet, and copy it to your new
 sandbox project.
-3. Run the applet with SSH access enables.
+3. Run the applet with SSH access enabled.
 4. Wait a minute or so after the applet starts, and check the log. There
 you will see instructions to paste a URL into your browser. It will look
 something like this:
 https://123.456.789.00:22
 5. You will then need to start your browser in a mode where it will allow
-you to connect to port 22. When you do this, you can go to the URL.
-6. Your broswer will give you a warning about a certificate; choose to proceed
+you to connect to port 22. This varies by browser:
+
+*Google Chrome* - Run with `--explicity-allowed-ports=22`
+
+*Firefox* - Follow the instructions [here](https://support.mozilla.org/en-US/questions/1083282)
+
+6. When you go to the URL, your broswer will give you a warning about a certificate; choose to proceed
 anyway. Then, you will see a command line that is running on a remote DNAnexus
 worker.
 7. Source the DNAnexus environment by running `source dx-toolkit environment`.
+8. In the DNAnexus web UI, create an access token that has contribute access to the
+sandbox project your created earlier.
+9. Run `dx login --token <token>` to login.
 
 Now you are ready to start the workshop.
 
