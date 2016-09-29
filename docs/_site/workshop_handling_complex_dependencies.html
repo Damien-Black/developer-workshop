@@ -4,8 +4,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Special layout pages | DNAnexus Developer Workshop</title>
+<meta name="keywords" content=" getting_started">
+<title>Handling Complex Dependencies | DNAnexus Developer Workshop</title>
 <link rel="stylesheet" href="css/syntax.css">
 
 
@@ -130,7 +130,7 @@
                                 searchInput: document.getElementById('search-input'),
                                 resultsContainer: document.getElementById('results-container'),
                                 dataSource: 'search.json',
-                                searchResultTemplate: '<li><a href="{url}" title="Special layout pages">{title}</a></li>',
+                                searchResultTemplate: '<li><a href="{url}" title="Handling Complex Dependencies">{title}</a></li>',
                     noResultsText: 'No results found.',
                             limit: 10,
                             fuzzy: true,
@@ -156,38 +156,87 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle"> </li>
+    <li class="sidebarTitle">Developer Workshop </li>
     
     
     
     <li>
-        <a href="#">Products</a>
+        <a href="#">Workshop Topics</a>
         <ul>
             
             
             
-            <li><a href="news.html">News</a></li>
+            <li><a href="index.html">0. Welcome</a></li>
             
             
             
             
             
             
-            <li><a href="mydoc_introduction.html">Theme instructions</a></li>
+            <li><a href="workshop_getting_started.html">1. Getting Started</a></li>
             
             
             
             
             
             
-            <li><a href="p1_landing_page.html">Product 1</a></li>
+            <li><a href="workshop_organizing_the_pipeline.html">2. Organizing the Pipeline</a></li>
             
             
             
             
             
             
-            <li><a href="p2_landing_page.html">Product 2</a></li>
+            <li><a href="workshop_do_you_need_an_applet.html">3. Do You Need an Applet?</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_basic_applet_structure.html">4. Basic Applet Structure</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_debugging_and_error_handling.html">5. Debugging and Error Handling</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_execution.html">6. Improving Execution</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_improving_file_io.html">7. Improving File IO</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_parallelization.html">8. Parallelization</a></li>
+            
+            
+            
+            
+            
+            
+            <li><a href="workshop_distributed_applets.html">9. Distributed Applets</a></li>
+            
+            
+            
+            
+            
+            
+            <li class="active"><a href="workshop_handling_complex_dependencies.html">10. Handling Complex Dependencies</a></li>
             
             
             
@@ -211,7 +260,7 @@
     <!-- Content Column -->
     <div class="col-md-9">
         <div class="post-header">
-   <h1 class="post-title-main">Special layout pages</h1>
+   <h1 class="post-title-main">Handling Complex Dependencies</h1>
 </div>
 
 
@@ -251,86 +300,89 @@ $('#toc').on('click', 'a', function() {
 
     
 
-  <p>The following pages and posts are tagged with <button type="button" style="cursor: default" class="btn btn-default navbar-btn">special_layouts</button></p>
-<table><thead><tr><th>Title</th><th>Type</th><th>Excerpt</th></tr></thead>
-    <tbody>
-    
-  
-    
-   
-    
-   
-    
-        
+  <h2 id="ballgowns-dependencies">10.0 Ballgown’s Dependencies</h2>
 
-        <tr><td><a href="jsmydoc_scroll.html">Scroll layout</a></td>
-            <td><span class="label label-default">Page</span></td>
-          <td> This page demonstrates how you the integration of a script called ScrollTo, which is used here to link definitions of a JSON code sample to a list of definit... </td>
-        </tr>
-        
-     
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
-    
-   
+<p>The last applet we will work on is for Ballgown. Ballgown is an R package that provides a
+lot of flexibility in creating figures and other differential expression analyses. The
+R scripts will need to begin with</p>
 
-        
-        
+<div class="highlighter-rouge"><pre class="highlight"><code>library(ballgown)
+</code></pre>
+</div>
 
-   </tbody>
-</table>
+<p>So, we will need to install Ballgown before we can run any of the R scripts we may want to
+run. The Ballgown instructions tell us to do this via bioconductor, which can be done
+very simply:</p>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>source("http://bioconductor.org/biocLite.R")
+biocLite("ballgown")
+</code></pre>
+</div>
+
+<p>One solution for creating our Ballgown applet would be to have an R script that installs
+the package from bioconductor at the beginning of the applet script. While this would
+often work, it would introduce a dependency on an external service that may frequently
+be unavailable. This is not limited to bioconductor packages; packages installed via
+pip, cran, cpan, etc. will all have some risk of failing due to a transient inability
+to download packages.</p>
+
+<p>Additionally, dependencies can take a long time to install. They may require lengthy
+compilation or data transfer.</p>
+
+<h2 id="ballgown-asset">10.1 Ballgown Asset</h2>
+
+<p>We can solve this issues by using <code class="highlighter-rouge">assets</code> on DNAnexus. There are two steps to
+using an asset:</p>
+
+<ol>
+  <li>Creating the asset using <code class="highlighter-rouge">dx build_asset</code>.</li>
+  <li>Referring to the build asset using <code class="highlighter-rouge">assetDepends</code> in the <code class="highlighter-rouge">dxapp.json</code> of the 
+applet.</li>
+</ol>
+
+<p>The asset directory contains a file called dxasset.json that is similar in spirit
+to a dxapp.json. It also optionally has a Makefile that contains instructions for
+dependencies that cannot be installed via a package manager. For the Ballgown asset,
+the dxasset.json is this:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ballgown_asset"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ballgown"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Asset containing the dependencies for Ballgown."</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.0.2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ubuntu"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"release"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.04"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>And the Makefile contains code for upgrading R and then installing Ballgown
+with bioconductor:</p>
+
+<div class="language-makefile highlighter-rouge"><pre class="highlight"><code><span class="nl">all</span><span class="o">:</span>
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+	sudo apt-get --yes update
+	sudo apt-get remove --auto-remove --yes r-base
+	sudo apt-get install --yes --force-yes r-base
+	sudo apt-get install --yes --force-yes r-base-dev
+	R -e <span class="s1">'source("http://bioconductor.org/biocLite.R"); biocLite(); biocLite("ballgown")'</span>
+</code></pre>
+</div>
+
+<p>When we run <code class="highlighter-rouge">dx build_asset</code>, this will create a record which we can use the dxapp.json
+file for the actual Ballgown applet:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">  </span><span class="s2">"runSpec"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/script.sh"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"interpreter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"systemRequirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"instanceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mem1_ssd1_x4"</span><span class="p">}},</span><span class="w">
+    </span><span class="nt">"distribution"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ubuntu"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"release"</span><span class="p">:</span><span class="w"> </span><span class="s2">"14.04"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timeoutPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"*"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nt">"minutes"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">}},</span><span class="w">
+    </span><span class="nt">"assetDepends"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"record-BzbY2z80YZX3Xx1Q1kKZ808V"</span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
 
 
     <div class="tags">

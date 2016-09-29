@@ -78,6 +78,16 @@
 
 
 {
+"title": "Distributed Applets",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_distributed_applets.html",
+"summary": ""
+},
+
+
+
+{
 "title": "Do You Need an Applet?",
 "tags": "",
 "keywords": "getting_started",
@@ -92,6 +102,16 @@
 "tags": "",
 "keywords": "getting_started",
 "url": "workshop_getting_started.html",
+"summary": ""
+},
+
+
+
+{
+"title": "Handling Complex Dependencies",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_handling_complex_dependencies.html",
 "summary": ""
 },
 
@@ -122,6 +142,16 @@
 "tags": "",
 "keywords": "getting_started",
 "url": "workshop_organizing_the_pipeline.html",
+"summary": ""
+},
+
+
+
+{
+"title": "Parallelization",
+"tags": "",
+"keywords": "getting_started",
+"url": "workshop_parallelization.html",
 "summary": ""
 },
 
