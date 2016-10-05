@@ -638,28 +638,6 @@ hisat2/resources/usr/bin/hisat2-build-l-debug
 
 <p>We can create this with the following commands:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
-<span class="gp">$ </span>mkdir hisat2/src
-<span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
-<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh src/script.sh
-<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json dxapp.json
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>dx build hisat2
-</code></pre>
-</div>
-
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
-<span class="gp">$ </span>mkdir hisat2/src
-<span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
-<span class="gp">$ </span>cp applets/hisat2/python/41_script.py src/script.py
-<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json dxapp.json
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>dx build hisat2
-</code></pre>
-</div>
-
 <ul id="profileTabs" class="nav nav-tabs">
     <li class="active"><a href="#python2" data-toggle="tab">python</a></li>
     <li><a href="#bash2" data-toggle="tab">bash</a></li>
@@ -670,10 +648,10 @@ hisat2/resources/usr/bin/hisat2-build-l-debug
 <pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
 <span class="gp">$ </span>mkdir hisat2/src
 <span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
-<span class="gp">$ </span>cp applets/hisat2/python/41_script.py src/script.py
-<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json dxapp.json
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/python/41_script.py hisat2/src/script.py
+<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json hisat2/dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> hisat2/resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> hisat2/resources/usr/bin
 <span class="gp">$ </span>dx build hisat2
 </code></pre>
 
@@ -683,10 +661,10 @@ hisat2/resources/usr/bin/hisat2-build-l-debug
 <pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
 <span class="gp">$ </span>mkdir hisat2/src
 <span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
-<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh src/script.sh
-<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json dxapp.json
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh hisat2/src/script.sh
+<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json hisat2/dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> hisat2/resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> hisat2/resources/usr/bin
 <span class="gp">$ </span>dx build hisat2
 </code></pre>
   
@@ -710,7 +688,7 @@ hisat2/resources/usr/bin/hisat2-build-l-debug
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2016 DNAnexus. All rights reserved. <br />
- Site last generated: Sep 29, 2016 <br />
+ Site last generated: Oct 5, 2016 <br />
 <p><img src="images/company_logo.png" alt="Company logo"/></p>
                 </div>
             </div>

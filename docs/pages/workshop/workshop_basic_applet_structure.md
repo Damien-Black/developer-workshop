@@ -338,28 +338,6 @@ hisat2/resources/usr/bin/hisat2-build-l-debug
 
 We can create this with the following commands:
 
-```shell
-$ mkdir hisat2
-$ mkdir hisat2/src
-$ mkdir -p hisat2/resources/usr/bin
-$ cp applets/hisat2/bash/41_script.sh src/script.sh
-$ cp applets/hisat2/bash/41_dxapp.json dxapp.json
-$ cp resources/hisat2/hisat2-2.0.4/hisat2* resources/usr/bin
-$ cp resources/hisat2/hisat2-2.0.4/extract* resources/usr/bin
-$ dx build hisat2
-```
-
-```shell
-$ mkdir hisat2
-$ mkdir hisat2/src
-$ mkdir -p hisat2/resources/usr/bin
-$ cp applets/hisat2/python/41_script.py src/script.py
-$ cp applets/hisat2/python/41_dxapp.json dxapp.json
-$ cp resources/hisat2/hisat2-2.0.4/hisat2* resources/usr/bin
-$ cp resources/hisat2/hisat2-2.0.4/extract* resources/usr/bin
-$ dx build hisat2
-```
-
 <ul id="profileTabs" class="nav nav-tabs">
     <li class="active"><a href="#python2" data-toggle="tab">python</a></li>
     <li><a href="#bash2" data-toggle="tab">bash</a></li>
@@ -370,10 +348,10 @@ $ dx build hisat2
 <pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
 <span class="gp">$ </span>mkdir hisat2/src
 <span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
-<span class="gp">$ </span>cp applets/hisat2/python/41_script.py src/script.py
-<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json dxapp.json
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/python/41_script.py hisat2/src/script.py
+<span class="gp">$ </span>cp applets/hisat2/python/41_dxapp.json hisat2/dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> hisat2/resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> hisat2/resources/usr/bin
 <span class="gp">$ </span>dx build hisat2
 </code></pre>
 
@@ -383,10 +361,10 @@ $ dx build hisat2
 <pre class="highlight"><code><span class="gp">$ </span>mkdir hisat2
 <span class="gp">$ </span>mkdir hisat2/src
 <span class="gp">$ </span>mkdir -p hisat2/resources/usr/bin
-<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh src/script.sh
-<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json dxapp.json
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> resources/usr/bin
-<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> resources/usr/bin
+<span class="gp">$ </span>cp applets/hisat2/bash/41_script.sh hisat2/src/script.sh
+<span class="gp">$ </span>cp applets/hisat2/bash/41_dxapp.json hisat2/dxapp.json
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/hisat2<span class="k">*</span> hisat2/resources/usr/bin
+<span class="gp">$ </span>cp resources/hisat2/hisat2-2.0.4/extract<span class="k">*</span> hisat2/resources/usr/bin
 <span class="gp">$ </span>dx build hisat2
 </code></pre>
   

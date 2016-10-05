@@ -482,95 +482,6 @@ now indicate that the user should expect compressed files:</p>
 
 <p>And we need to update our applet scripts so that they decompress the input files and compress the output:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
-<span class="nb">set</span> -x -o pipefail
-
-main<span class="o">()</span> <span class="o">{</span>
-
-    <span class="c"># Download the inputs to the worker's local storage</span>
-    mark-section <span class="s2">"downloading input files"</span>
-    dx download <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span> -o hisat2_index.tar.gz
-    dx download <span class="s2">"</span><span class="nv">$mate1_fastqgz</span><span class="s2">"</span> -o mate1.fastq.gz
-    gunzip mate1.fastq.gz
-    dx download <span class="s2">"</span><span class="nv">$mate2_fastqgz</span><span class="s2">"</span> -o mate2.fastq.gz
-    gunzip mate2.fastq.gz
-
-    <span class="c"># Extract the tarball containing the HISAT2 reference</span>
-    mark-section <span class="s2">"extracting reference tarball"</span>
-    tar xf hisat2_index.tar.gz
-
-    <span class="c"># Get the index basename to use when calling hisat2</span>
-    <span class="nv">index_filename</span><span class="o">=</span><span class="k">$(</span>dx describe --name <span class="s2">"</span><span class="nv">$hisat2_index_targz</span><span class="s2">"</span><span class="k">)</span>
-    <span class="nv">index_directory</span><span class="o">=</span><span class="k">${</span><span class="nv">index_filename</span><span class="p">%.tar.gz</span><span class="k">}</span>
-    <span class="nv">index1_filename</span><span class="o">=(</span> <span class="nv">$index_directory</span>/<span class="k">*</span>.1.ht2 <span class="o">)</span>
-    <span class="nv">index_basename</span><span class="o">=</span><span class="k">${</span><span class="nv">index1_filename</span><span class="p">%.1.ht2</span><span class="k">}</span>
-
-    <span class="c"># Run hisat2</span>
-    mark-section <span class="s2">"running hisat2 command"</span>
-    hisat2 --dta -x <span class="nv">$index_basename</span> -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
-
-    mark-section <span class="s2">"converting SAM to BAM"</span>
-    samtools view -b hisat2_output.sam &gt; hisat2_output.bam
-
-    <span class="c"># Upload the resulting file and associate it with the aligned_bam output</span>
-    mark-section <span class="s2">"uploading BAM results"</span>
-    <span class="nv">uploaded_id</span><span class="o">=</span><span class="k">$(</span>dx upload hisat2_output.bam --brief<span class="k">)</span>
-    dx-jobutil-add-output aligned_bam <span class="s2">"</span><span class="nv">$uploaded_id</span><span class="s2">"</span>
-    mark-success
-<span class="o">}</span>
-</code></pre>
-</div>
-
-<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
-
-<span class="kn">import</span> <span class="nn">dxpy</span>
-
-<span class="nd">@dxpy.entry_point</span><span class="p">(</span><span class="s">"main"</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="n">mate1_fastqgz</span><span class="p">,</span> <span class="n">mate2_fastqgz</span><span class="p">):</span>
-
-    <span class="c"># First, download all the input files to local storage</span>
-    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">)</span>
-    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate1_fastqgz</span><span class="p">,</span> <span class="s">"mate1.fastq.gz"</span><span class="p">)</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"gunzip"</span><span class="p">,</span> <span class="s">"mate1.fastq.gz"</span><span class="p">])</span>
-    <span class="n">dxpy</span><span class="o">.</span><span class="n">download_dxfile</span><span class="p">(</span><span class="n">mate2_fastqgz</span><span class="p">,</span> <span class="s">"mate2.fastq.gz"</span><span class="p">)</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"gunzip"</span><span class="p">,</span> <span class="s">"mate2.fastq.gz"</span><span class="p">])</span>
-
-
-    <span class="c"># Second, extract the index tarball</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"tar"</span><span class="p">,</span> <span class="s">"xf"</span><span class="p">,</span> <span class="s">"hisat2_index.tar.gz"</span><span class="p">])</span>
-    <span class="k">except</span> <span class="nb">Exception</span><span class="p">:</span>
-        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">AppError</span><span class="p">(</span><span class="s">"Error extracting reference tarball"</span><span class="p">)</span>
-
-    <span class="n">index_directory</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">DXFile</span><span class="p">(</span><span class="n">hisat2_index_targz</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".tar.gz"</span><span class="p">)]</span>
-    <span class="n">index_basename</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">index_directory</span><span class="p">,</span> <span class="s">"*.1.ht2"</span><span class="p">))[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">".1.ht2"</span><span class="p">)]</span>
-
-
-    <span class="c"># Prepare the hisat2 command and run it.</span>
-    <span class="n">hisat2_cmd_template</span> <span class="o">=</span> <span class="p">(</span><span class="s">"hisat2 --dta -x {index_basename} -1 {mate1_fastq} "</span>
-                           <span class="s">"-2 {mate2_fastq} -S {hisat2_output_sam}"</span><span class="p">)</span>
-    <span class="n">hisat2_cmd</span> <span class="o">=</span> <span class="n">hisat2_cmd_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-        <span class="n">index_basename</span><span class="o">=</span><span class="n">index_basename</span><span class="p">,</span>
-        <span class="n">mate1_fastq</span><span class="o">=</span><span class="s">"mate1.fastq"</span><span class="p">,</span>
-        <span class="n">mate2_fastq</span><span class="o">=</span><span class="s">"mate2.fastq"</span><span class="p">,</span>
-        <span class="n">hisat2_output_sam</span><span class="o">=</span><span class="s">"hisat2_output.sam"</span><span class="p">)</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">hisat2_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s">"samtools"</span><span class="p">,</span> <span class="s">"view"</span><span class="p">,</span> <span class="s">"-b"</span><span class="p">,</span> <span class="s">"hisat2_output.sam"</span><span class="p">,</span> <span class="s">"-o"</span><span class="p">,</span> <span class="s">"hisat2_output.bam"</span><span class="p">])</span>
-
-    <span class="c"># Upload the output SAM file.</span>
-    <span class="n">uploaded_dxfile</span> <span class="o">=</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">upload_local_file</span><span class="p">(</span><span class="s">"hisat2_output.bam"</span><span class="p">)</span>
-
-    <span class="c"># Return the ID of the uploaded SAM file associated with the "aligned_sam"</span>
-    <span class="c"># field in the outputSpec in dxapp.json.</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s">"aligned_bam"</span><span class="p">:</span> <span class="n">dxpy</span><span class="o">.</span><span class="n">dxlink</span><span class="p">(</span><span class="n">uploaded_dxfile</span><span class="o">.</span><span class="n">get_id</span><span class="p">())}</span>
-</code></pre>
-</div>
-
 <ul id="profileTabs" class="nav nav-tabs">
     <li class="active"><a href="#python" data-toggle="tab">python</a></li>
     <li><a href="#bash" data-toggle="tab">bash</a></li>
@@ -738,8 +649,8 @@ rather than strings.</p>
 
 <p><code class="highlighter-rouge">dx-upload-all-outputs</code> handles both the uploading of files and the association of the
 uploaded files with the appropriate fields in the dxapp.json’s outputSpec. To use
-<code class="highlighter-rouge">dx-upload-all-outputs</code>, move output files to directories <code class="highlighter-rouge">/home/dnanexus/&lt;output_field&gt;/</code>.
-So for the <code class="highlighter-rouge">aligned_bam</code> output, we should put our BAM file in <code class="highlighter-rouge">/home/dnanexuss/aligned_bam/</code>
+<code class="highlighter-rouge">dx-upload-all-outputs</code>, move output files to directories <code class="highlighter-rouge">/home/dnanexus/out/&lt;output_field&gt;/</code>.
+So for the <code class="highlighter-rouge">aligned_bam</code> output, we should put our BAM file in <code class="highlighter-rouge">/home/dnanexus/out/aligned_bam/</code>
 before calling <code class="highlighter-rouge">dx-upload-all-outputs</code>.</p>
 
 <p>Putting these together, we get an updated script:</p>
@@ -917,7 +828,7 @@ start from a working template.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2016 DNAnexus. All rights reserved. <br />
- Site last generated: Sep 29, 2016 <br />
+ Site last generated: Oct 5, 2016 <br />
 <p><img src="images/company_logo.png" alt="Company logo"/></p>
                 </div>
             </div>

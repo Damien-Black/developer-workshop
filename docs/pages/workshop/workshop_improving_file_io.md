@@ -187,94 +187,6 @@ now indicate that the user should expect compressed files:
 
 And we need to update our applet scripts so that they decompress the input files and compress the output:
 
-```shell
-#!/bin/bash
-set -x -o pipefail
-
-main() {
-
-    # Download the inputs to the worker's local storage
-    mark-section "downloading input files"
-    dx download "$hisat2_index_targz" -o hisat2_index.tar.gz
-    dx download "$mate1_fastqgz" -o mate1.fastq.gz
-    gunzip mate1.fastq.gz
-    dx download "$mate2_fastqgz" -o mate2.fastq.gz
-    gunzip mate2.fastq.gz
-
-    # Extract the tarball containing the HISAT2 reference
-    mark-section "extracting reference tarball"
-    tar xf hisat2_index.tar.gz
-
-    # Get the index basename to use when calling hisat2
-    index_filename=$(dx describe --name "$hisat2_index_targz")
-    index_directory=${index_filename%.tar.gz}
-    index1_filename=( $index_directory/*.1.ht2 )
-    index_basename=${index1_filename%.1.ht2}
-
-    # Run hisat2
-    mark-section "running hisat2 command"
-    hisat2 --dta -x $index_basename -1 mate1.fastq -2 mate2.fastq -S hisat2_output.sam
-
-    mark-section "converting SAM to BAM"
-    samtools view -b hisat2_output.sam > hisat2_output.bam
-
-    # Upload the resulting file and associate it with the aligned_bam output
-    mark-section "uploading BAM results"
-    uploaded_id=$(dx upload hisat2_output.bam --brief)
-    dx-jobutil-add-output aligned_bam "$uploaded_id"
-    mark-success
-}
-```
-
-```python
-import glob
-import os
-import subprocess
-import traceback
-
-import dxpy
-
-@dxpy.entry_point("main")
-def main(hisat2_index_targz, mate1_fastqgz, mate2_fastqgz):
-
-    # First, download all the input files to local storage
-    dxpy.download_dxfile(hisat2_index_targz, "hisat2_index.tar.gz")
-    dxpy.download_dxfile(mate1_fastqgz, "mate1.fastq.gz")
-    subprocess.check_call(["gunzip", "mate1.fastq.gz"])
-    dxpy.download_dxfile(mate2_fastqgz, "mate2.fastq.gz")
-    subprocess.check_call(["gunzip", "mate2.fastq.gz"])
-
-
-    # Second, extract the index tarball
-    try:
-        subprocess.check_call(["tar", "xf", "hisat2_index.tar.gz"])
-    except Exception:
-        traceback.print_exc()
-        raise dxpy.AppError("Error extracting reference tarball")
-
-    index_directory = dxpy.DXFile(hisat2_index_targz).name[:-len(".tar.gz")]
-    index_basename = glob.glob(os.path.join(index_directory, "*.1.ht2"))[0][:-len(".1.ht2")]
-
-
-    # Prepare the hisat2 command and run it.
-    hisat2_cmd_template = ("hisat2 --dta -x {index_basename} -1 {mate1_fastq} "
-                           "-2 {mate2_fastq} -S {hisat2_output_sam}")
-    hisat2_cmd = hisat2_cmd_template.format(
-        index_basename=index_basename,
-        mate1_fastq="mate1.fastq",
-        mate2_fastq="mate2.fastq",
-        hisat2_output_sam="hisat2_output.sam")
-    subprocess.check_call(hisat2_cmd, shell=True)
-
-    subprocess.check_call(["samtools", "view", "-b", "hisat2_output.sam", "-o", "hisat2_output.bam"])
-
-    # Upload the output SAM file.
-    uploaded_dxfile = dxpy.upload_local_file("hisat2_output.bam")
-
-    # Return the ID of the uploaded SAM file associated with the "aligned_sam"
-    # field in the outputSpec in dxapp.json.
-    return {"aligned_bam": dxpy.dxlink(uploaded_dxfile.get_id())}
-```
 
 <ul id="profileTabs" class="nav nav-tabs">
     <li class="active"><a href="#python" data-toggle="tab">python</a></li>
@@ -444,8 +356,8 @@ rather than strings.
 
 `dx-upload-all-outputs` handles both the uploading of files and the association of the
 uploaded files with the appropriate fields in the dxapp.json's outputSpec. To use
-`dx-upload-all-outputs`, move output files to directories `/home/dnanexus/<output_field>/`.
-So for the `aligned_bam` output, we should put our BAM file in `/home/dnanexuss/aligned_bam/`
+`dx-upload-all-outputs`, move output files to directories `/home/dnanexus/out/<output_field>/`.
+So for the `aligned_bam` output, we should put our BAM file in `/home/dnanexus/out/aligned_bam/`
 before calling `dx-upload-all-outputs`.
 
 Putting these together, we get an updated script:
